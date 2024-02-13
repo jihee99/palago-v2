@@ -1,0 +1,67 @@
+server:
+  port: 8081
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+
+  thymeleaf:
+    check-template-location: true
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+  datasource:
+    url: jdbc:log4jdbc:postgresql://localhost:5432/coupon
+    username: coupon
+    password: couponproject00
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    url: jdbc:log4jdbc:postgresql://localhost:5432/coupon
+#    username: ENC(GWr1PxmAo3I4kKMtF2+IBQ==)
+#    password: ENC(zih8AWPp+sgE/DUv15liTmH1DuUiqOTy)
+#    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      dialect: -- org.hibernate.dialect.PostgreSQLDialect
+
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+
+
+
+logging:
+  level:
+    root: info
+
+mybatis:
+  #  config-location: classpath:mybatis-config.xml
+  mapper-locations: /mapper/*.xml, /mapper/**/*.xml
+  configuration:
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
+
+
+jasypt:
+  encryptor:
+    bean: propertyEncryptor
+  secret-key: ${JASYPT_PASSWORD}
+
+
