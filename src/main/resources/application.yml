@@ -55,8 +55,14 @@ mybatis:
   #  config-location: classpath:mybatis-config.xml
   mapper-locations: /mapper/*.xml, /mapper/**/*.xml
   configuration:
-    call-setters-on-nulls: true
+    call-setters-on-nulls: true.t
     map-underscore-to-camel-case: true
+auth:
+  jwt:
+    secret: ENC(DEKa2T2pdknJJlBxd5kdwujKZAKFZ0ZAYwiHYpvfSxMpE28ReJI12DZASSib8nr01xtgb86V9zwQUQ7Q5W/mua/K3m4XKvl9FvEe7beKMhc=)
+    prefix: "Bearer "
+    header-string: "Authorization"
+    expiration-time : 3600
 
 
 jasypt:
