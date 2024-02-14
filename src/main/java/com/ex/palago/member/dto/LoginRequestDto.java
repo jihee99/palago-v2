@@ -1,4 +1,4 @@
-package com.ex.palago.dto;
+package com.ex.palago.member.dto;
 
 import lombok.Data;
 
