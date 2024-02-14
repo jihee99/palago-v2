@@ -1,6 +1,5 @@
 package com.ex.palago.security.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.ex.palago.repository.MemberRepository;
+import com.ex.palago.member.repository.MemberRepository;
 import com.ex.palago.security.jwt.JwtAuthenticationFilter;
 import com.ex.palago.security.jwt.JwtAuthorizationFilter;
 
@@ -28,6 +27,7 @@ public class SecurityConfig {
 	private final MemberRepository memberRepository;
 
 	private final CorsConfig corsConfig;
+
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -50,30 +50,28 @@ public class SecurityConfig {
 		http.csrf().disable();
 
 		http.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-			.and()
-			.formLogin().disable()
-			.httpBasic().disable()
+				.and()
+				.formLogin().disable()
+				.httpBasic().disable()
 
-			// .apply(new MyCustomDsl())
-
-
-			.authorizeRequests(authroize -> authroize
-				.antMatchers("/api/v1/user/**")
-				.access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-
-				.antMatchers("/api/v1/seller/**")
-				.access("hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
-				.antMatchers("/api/v1/admin/**")
-
-				.access("hasRole('ROLE_ADMIN')")
-				.anyRequest().permitAll());
+				// .apply(new MyCustomDsl())
 
 
-		http.build();
+				.authorizeRequests(authroize -> authroize
+						.antMatchers("/api/v1/user/**")
+						.access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+
+						.antMatchers("/api/v1/seller/**")
+						.access("hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+						.antMatchers("/api/v1/admin/**")
+
+						.access("hasRole('ROLE_ADMIN')")
+						.anyRequest().permitAll());
 
 
+		return http.build();
 
 	}
 

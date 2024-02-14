@@ -1,13 +1,12 @@
 package com.ex.palago.security.auth;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ex.palago.model.Member;
+import com.ex.palago.member.model.Member;
 
 public class PrincipalDetails implements UserDetails {
 

@@ -1,4 +1,4 @@
-package com.ex.palago.model;
+package com.ex.palago.member.model;
 
 public enum Role {
 

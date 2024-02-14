@@ -1,4 +1,4 @@
-package com.ex.palago.model;
+package com.ex.palago.member.model;
 
 import java.time.LocalDateTime;
 
