@@ -1,10 +1,14 @@
 package com.ex.palago.security.filter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+//import com.auth0.jwt.JWT;
+//import com.auth0.jwt.algorithms.Algorithm;
 import com.ex.palago.member.model.Member;
 import com.ex.palago.security.auth.PrincipalDetails;
 import com.ex.palago.security.jwt.JwtProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +22,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 
 
 // 인가
@@ -26,7 +32,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private MemberRepository memberRepository;
 
-//	private JwtProperties jwtProperties;
+	private JwtProperties jwtProperties;
 
 	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
 		super(authenticationManager);
@@ -35,22 +41,30 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-		String header = request.getHeader((JwtProperties.HEADER_STRING));
-//		String header = request.getHeader(jwtProperties.getHeaderString());
-		if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-//		if (header == null || !header.startsWith(JwtProperties.getPrefix())) {
+//		String header = request.getHeader((JwtProperties.HEADER_STRING));
+		String header = request.getHeader(jwtProperties.getHeaderString());
+//		if (header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
+		if (header == null || !header.startsWith(jwtProperties.getPrefix())) {
 			chain.doFilter(request, response);
 			return;
 		}
 		System.out.println("header : " + header);
-		String token = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
-//		String token = request.getHeader(JwtProperties.getHeaderString()).replace(JwtProperties.getPrefix(), "");
+//		String token = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
+		String token = request.getHeader(jwtProperties.getHeaderString()).replace(jwtProperties.getPrefix(), "");
 
 		// 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
 		// 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는
 		// loadByUsername이 호출됨.
-		String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-				.getClaim("username").asString();
+//		String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
+//				.getClaim("username").asString();
+
+		Jws<Claims> claimsJws = Jwts.parserBuilder()
+				.setSigningKey(getSecretKey())
+				.build()
+				.parseClaimsJws(token);
+
+
+		String username = claimsJws.getBody().get("username", String.class);
 
 		if (username != null) {
 			Member member = memberRepository.findByUsername(username).orElseThrow();
@@ -70,4 +84,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		chain.doFilter(request, response);
 	}
 
+	private Key getSecretKey() {
+		return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
+	}
 }
