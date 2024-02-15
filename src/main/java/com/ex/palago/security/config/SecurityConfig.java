@@ -13,8 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.ex.palago.member.repository.MemberRepository;
-import com.ex.palago.security.jwt.JwtAuthenticationFilter;
-import com.ex.palago.security.jwt.JwtAuthorizationFilter;
+import com.ex.palago.security.filter.JwtAuthenticationFilter;
+import com.ex.palago.security.filter.JwtAuthorizationFilter;
 
 import lombok.RequiredArgsConstructor;
 

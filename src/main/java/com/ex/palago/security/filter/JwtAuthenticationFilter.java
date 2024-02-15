@@ -1,4 +1,4 @@
-package com.ex.palago.security.jwt;
+package com.ex.palago.security.filter;
 
 import java.util.Date;
 
@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.ex.palago.security.auth.PrincipalDetails;
+import com.ex.palago.security.jwt.JwtProperties;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

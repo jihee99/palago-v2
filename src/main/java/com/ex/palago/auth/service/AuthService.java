@@ -1,5 +1,6 @@
 package com.ex.palago.auth.service;
 
+import com.ex.palago.auth.model.request.SendSignUpEmailRequest;
 import com.ex.palago.auth.model.request.SignInRequest;
 import com.ex.palago.auth.model.response.SignInRequestValidationResult;
 import com.ex.palago.member.model.Member;
@@ -47,10 +48,17 @@ public class AuthService {
 		return new SignInRequestValidationResult(member.getRoleKey());
 	}
 
+//	@Transactional
+//	public void sendSignUpEmail(SendSignUpEmailRequest request) {
+//		validateMemberNotExist(request.getEmail());
+//		emailVerificationService.sendVerificationCodeByEmail(request.getEmail());
+//	}
+
+
 
 	private void validateMemberNotExist(String username) {
 		if (memberRepository.findByUsername(username).isPresent()) {
-			log.info("[회원가입 실패] 중복 이메일 회원가입 시도 -> id : " + username);
+			log.info("[회원가입 실패] 중복 아이디 회원가입 시도 -> id : " + username);
 			log.info("{}", "DuplicateIdException");
 //			throw DuplicateIdException.EXCEPTION;
 		}
