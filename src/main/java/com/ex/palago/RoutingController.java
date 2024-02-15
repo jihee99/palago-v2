@@ -38,7 +38,6 @@ public class RoutingController {
         return "/login";
     }
 
-
     @GetMapping("/join")
     public String viewJoin() {
         return "/join";
