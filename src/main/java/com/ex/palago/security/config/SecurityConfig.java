@@ -1,5 +1,6 @@
 package com.ex.palago.security.config;
 
+import com.ex.palago.security.jwt.JwtProperties;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +25,10 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 
+	private final CorsConfig corsConfig;
 	private final MemberRepository memberRepository;
 
-	private final CorsConfig corsConfig;
+	private final JwtProperties jwtProperties;
 
 
 	@Bean
@@ -86,8 +88,10 @@ public class SecurityConfig {
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
 				.addFilter(corsConfig.corsFilter())
-				.addFilter(new JwtAuthenticationFilter(authenticationManager))
-				.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+//				.addFilter(new JwtAuthenticationFilter(authenticationManager))
+//				.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+				.addFilter(new JwtAuthenticationFilter(authenticationManager, jwtProperties))
+				.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository, jwtProperties));
 		}
 	}
 

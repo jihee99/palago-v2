@@ -34,9 +34,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private JwtProperties jwtProperties;
 
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberRepository memberRepository, JwtProperties jwtProperties) {
 		super(authenticationManager);
 		this.memberRepository = memberRepository;
+		this.jwtProperties = jwtProperties;
 	}
 
 	@Override

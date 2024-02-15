@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 	private final AuthenticationManager authenticationManager;
 
-	private JwtProperties jwtProperties;
+	private final JwtProperties jwtProperties;
 
 
 	// Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
