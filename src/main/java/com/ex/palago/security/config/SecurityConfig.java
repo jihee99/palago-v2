@@ -56,10 +56,12 @@ public class SecurityConfig {
 				.formLogin().disable()
 				.httpBasic().disable()
 
-				// .apply(new MyCustomDsl())
+				 .apply(new MyCustomDsl())
 
-
+				.and()
 				.authorizeRequests(authroize -> authroize
+						.antMatchers("/login", "/logout", "/sign", "/join").permitAll()
+
 						.antMatchers("/api/v1/user/**")
 						.access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
 
