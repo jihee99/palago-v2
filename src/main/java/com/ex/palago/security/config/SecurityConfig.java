@@ -72,6 +72,9 @@ public class SecurityConfig {
 						.access("hasRole('ROLE_ADMIN')")
 						.anyRequest().permitAll());
 
+		http.logout()
+			.logoutUrl("/logout")
+			.permitAll();
 
 		return http.build();
 
