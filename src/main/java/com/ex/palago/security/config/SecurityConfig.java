@@ -62,21 +62,18 @@ public class SecurityConfig {
 
 				.and()
 				.authorizeRequests(authroize -> authroize
-						.antMatchers("/login", "/logout", "/sign", "/join").permitAll()
+						.antMatchers("/", "/login", "/logout", "/sign", "/join").permitAll()
 
 						.antMatchers("/api/v1/user/**")
 						.access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
 
 						.antMatchers("/api/v1/seller/**")
 						.access("hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+
 						.antMatchers("/api/v1/admin/**")
-
 						.access("hasRole('ROLE_ADMIN')")
-						.anyRequest().permitAll());
 
-		http.logout()
-			.logoutUrl("/logout")
-			.permitAll();
+						.anyRequest().authenticated());
 
 		return http.build();
 

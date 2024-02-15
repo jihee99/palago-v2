@@ -22,9 +22,9 @@ spring:
     cache: false
 
   datasource:
-    url: jdbc:log4jdbc:postgresql://localhost:5432/palago
-    username: palago
-    password: palago00
+    url: ENC(0Zz/dLe+C/k6uYOFyRaoMQfdo+nCAwmNxpyMFVpMul0VZ6j4hH4aUXwMBk0luPgXL/E96NthzWFP79FYrT7Sgg==)
+    username: ENC(AlJK6StvrYyBb7huh5qvVw==)
+    password: ENC(ScKTg5e9LsatPJLDwHzyoWI7xTNAST00)
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
 #    url: jdbc:log4jdbc:postgresql://localhost:5432/coupon
 #    username: ENC(GWr1PxmAo3I4kKMtF2+IBQ==)

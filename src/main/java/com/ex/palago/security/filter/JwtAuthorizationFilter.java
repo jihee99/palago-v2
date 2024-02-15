@@ -9,6 +9,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,7 @@ import java.security.Key;
 
 
 // 인가
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 
@@ -49,6 +52,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 			chain.doFilter(request, response);
 			return;
 		}
+		log.info("{}", "AuthorizationFilter 진입");
 		System.out.println("header : " + header);
 //		String token = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
 		String token = request.getHeader(jwtProperties.getHeaderString()).replace(jwtProperties.getPrefix(), "");
@@ -67,9 +71,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 		String username = claimsJws.getBody().get("username", String.class);
 
+		System.out.println("username : " + username);
 		if (username != null) {
 			Member member = memberRepository.findByUsername(username).orElseThrow();
-
+			log.info("{}", member);
 			// 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
 			// 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
 			PrincipalDetails principalDetails = new PrincipalDetails(member);

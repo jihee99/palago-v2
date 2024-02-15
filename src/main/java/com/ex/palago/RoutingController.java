@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class RoutingController {
 
     @RequestMapping("/")
-    public String viewMain(){
+    public String mainPage(){
         return "/index";
     }
 
@@ -22,25 +22,34 @@ public class RoutingController {
     // 왜냐하면 @AuthenticationPrincipal은 UserDetailsService에서 리턴될 때 만들어지기 때문이다.
 
     // 유저 혹은 매니저 혹은 어드민이 접근 가능
-//    @GetMapping("user")
-//    public String user(Authentication authentication) {
-//        PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
-//        System.out.println("principal : " + principal.getMember().getId());
-//        System.out.println("principal : " + principal.getMember().getUsername());
-//        System.out.println("principal : " + principal.getMember().getPassword());
-//
-//        return "<h1>user</h1>";
-//    }
+   @GetMapping("/user")
+   public String user(Authentication authentication) {
+       PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
+       System.out.println("principal : " + principal.getMember().getId());
+       System.out.println("principal : " + principal.getMember().getUsername());
+       System.out.println("principal : " + principal.getMember().getPassword());
+
+       return "<h1>user</h1>";
+   }
 
 
     @GetMapping("/sign")
-    public String viewLogin() {
+    public String loginPage() {
         return "/login";
     }
 
     @GetMapping("/join")
-    public String viewJoin() {
+    public String joinPage() {
         return "/join";
     }
 
+    @GetMapping("/api/v1/seller/home")
+    public String sellerMainPage() {
+        return "/seller/home";
+    }
+
+    @GetMapping("/api/v1/system/home")
+    public String adminMainPage(){
+        return "/admin/home";
+    }
 }

@@ -6,11 +6,13 @@ import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 //import com.auth0.jwt.JWT;
 //import com.auth0.jwt.algorithms.Algorithm;
+import com.ex.palago.auth.model.request.SignInRequest;
 import com.ex.palago.security.auth.PrincipalDetails;
 import com.ex.palago.security.jwt.JwtProperties;
 import io.jsonwebtoken.Jwts;
@@ -45,35 +47,39 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		log.info("{}", "JwtAuthenticationFilter : 진입");
 
-		// request에 있는 username과 password를 파싱해서 자바 Object로 받기
-		ObjectMapper mapper = new ObjectMapper();
-		LoginRequestDto loginRequestDto = null;
 		try {
-			loginRequestDto = mapper.readValue(request.getInputStream(), LoginRequestDto.class);
-		} catch (Exception e) {
-			e.printStackTrace();
+			// request에 있는 username과 password를 파싱해서 자바 Object로 받기
+			LoginRequestDto loginRequestDto = getLoginRequest(request.getInputStream());
+			log.info("{} JwtAuthenticationFilter : " , loginRequestDto);
+
+			// 유저네임패스워드 토큰 생성
+			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
+			System.out.println("JwtAuthenticationFilter : success create token");
+
+			// authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
+			// loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
+			// UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
+			// UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
+			// Authentication 객체를 만들어서 필터체인으로 리턴해준다.
+
+			// Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
+			// Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
+			// 결론은 인증 프로바이더에게 알려줄 필요가 없음.
+			Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+			PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
+			System.out.println("Authentication : " + principalDetailis.getMember().getUsername());
+			System.out.println("Authentication : " + principalDetailis.getMember().getRoleKey());
+
+			return authentication;
+
+		} catch (IOException e){
+
+			log.error("JwtAuthenticationFilter login request dto parsing : ", e);
+			return super.attemptAuthentication(request, response);
+
 		}
-		System.out.println("JwtAuthenticationFilter : " + loginRequestDto);
 
-		// 유저네임패스워드 토큰 생성
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.getUsername(), loginRequestDto.getPassword());
-		System.out.println("JwtAuthenticationFilter : success create token");
-
-		// authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
-		// loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
-		// UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
-		// UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
-		// Authentication 객체를 만들어서 필터체인으로 리턴해준다.
-
-		// Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
-		// Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
-		// 결론은 인증 프로바이더에게 알려줄 필요가 없음.
-
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-		PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
-		System.out.println("Authentication : " + principalDetailis.getMember().getUsername());
-		return authentication;
 	}
 
 	// JWT Token 생성해서 response에 담아주기
@@ -88,7 +94,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		Date expiryDate = new Date(now.getTime() + jwtProperties.getExpirationTime());
 
 //		final Key =
-
+		// TODO
+		// token provider 생성해서 나누기
 		String jwtToken = Jwts.builder()
 				.setSubject(principalDetails.getUsername())
 				.claim("id", principalDetails.getMember().getId())
@@ -107,7 +114,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 //				.sign(Algorithm.HMAC512(JwtProperties.getSecretKey()));
 
-		System.out.println(jwtToken);
+
 //		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
 		response.addHeader(jwtProperties.getHeaderString(), jwtProperties.getPrefix()+jwtToken);
 	}
@@ -116,5 +123,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		return Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes(StandardCharsets.UTF_8));
 	}
 
+
+	private LoginRequestDto getLoginRequest(ServletInputStream inputStream) throws IOException{
+		// ObjectMapper mapper = new ObjectMapper();
+		// LoginRequestDto loginRequestDto = null;
+		// try {
+		// 	loginRequestDto = mapper.readValue(request.getInputStream(), LoginRequestDto.class);
+		// } catch (Exception e) {
+		// 	e.printStackTrace();
+		// }
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readValue(inputStream, LoginRequestDto.class);
+	}
 
 }
