@@ -3,6 +3,7 @@ package com.ex.palago.ticket.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -188,7 +189,7 @@ public class TicketItem {
         return itemOptionGroups.stream()
             .map(itemOptionGroup -> itemOptionGroup.getOptionGroup().getId())
             .sorted()
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public Boolean isQuantityReduced() {
