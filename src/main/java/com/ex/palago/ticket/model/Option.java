@@ -11,6 +11,8 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.parameters.P;
 
+import com.ex.palago.common.vo.Money;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +29,7 @@ public class Option {
 
 	private String answer;
 
-	private Long additionalPrice;
+	private Money additionalPrice;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "option_group_id", updatable = false)
@@ -35,14 +37,14 @@ public class Option {
 
 
 	@Builder
-	public Option (String answer, Long additionalPrice, OptionGroup optionGroup){
+	public Option (String answer, Money additionalPrice, OptionGroup optionGroup){
 		this.answer = answer;
 		this.additionalPrice = additionalPrice;
 		this.optionGroup = optionGroup;
 	}
 
 
-	public static Option create(String answer, Long additionalPrice, OptionGroup optionGroup) {
+	public static Option create(String answer, Money additionalPrice, OptionGroup optionGroup) {
 		return Option.builder()
 			.answer(answer)
 			.additionalPrice(additionalPrice)
