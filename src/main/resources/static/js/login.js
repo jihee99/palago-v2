@@ -12,8 +12,15 @@
 // }
 "use strict";
 (function ($) {
-    $('#loginBtn').on('click',function (e){
 
+    $(document).on('keypress', function (e) {
+        if (e.which === 13) {
+            // Enter 키를 눌렀을 때
+            $('#loginBtn').click();
+        }
+    });
+
+    $('#loginBtn').on('click',function (e){
         let mbrId = $('#mbrId').value;
         let mbrPwd = $('#mbrPwd').value;
 
