@@ -64,8 +64,9 @@ public class SecurityConfig {
 				.authorizeRequests(authroize -> authroize
 						.antMatchers("/", "/login", "/logout", "/sign", "/join").permitAll()
 
-						.antMatchers("/api/v1/user/**")
-						.access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
+						.antMatchers("/api/v1/user/**").hasAnyRole("ROLE_USER", "ROLE_SELLER", "ROLE_ADMIN")
+						// .antMatchers("/api/v1/user/**")
+						// .access("hasRole('ROLE_USER') or hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")
 
 						.antMatchers("/api/v1/seller/**")
 						.access("hasRole('ROLE_SELLER') or hasRole('ROLE_ADMIN')")

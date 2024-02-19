@@ -4,4 +4,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class AccountInfo {
+	// TODO
+	// account Information 추가해야함
 }
