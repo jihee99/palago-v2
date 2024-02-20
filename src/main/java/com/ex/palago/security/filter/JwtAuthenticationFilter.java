@@ -90,7 +90,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		String grantedAuthority = authResult.getAuthorities().stream().findAny().orElseThrow().toString();
 		Token jwtToken = tokenService.createToken(authResult.getPrincipal().toString(), grantedAuthority);
 
-		System.out.println("successfulAuthentication !!");
+		log.info(grantedAuthority);
+		log.info(authResult.getPrincipal().toString());
+		log.info("successfulAuthentication !!");
 
 		response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.AUTHORIZATION);
 		response.addHeader(HEADER_STRING, ACCESS_TOKEN_PREFIX + jwtToken.getAccessToken());

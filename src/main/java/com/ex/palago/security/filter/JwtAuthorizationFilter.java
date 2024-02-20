@@ -4,6 +4,7 @@ import com.ex.palago.member.model.Member;
 import com.ex.palago.security.auth.PrincipalDetails;
 import com.ex.palago.security.jwt.JwtTokenService;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +21,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+@Slf4j
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 	private static final String HEADER_STRING = HttpHeaders.AUTHORIZATION;
 	private static final String ACCESS_TOKEN_PREFIX = "Token ";
-
 	private final JwtTokenService tokenService;
 	private final MemberRepository memberRepository;
 
@@ -36,13 +37,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	}
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+
 		if (isNullToken(request)) {
 			chain.doFilter(request, response);
 			return;
 		}
 
+		log.info("authorization !!");
 		String jwtToken = request.getHeader(HEADER_STRING).replace(ACCESS_TOKEN_PREFIX, "");
 
 		if (tokenService.validateTokenExpirationTimeNotExpired(jwtToken)) {
