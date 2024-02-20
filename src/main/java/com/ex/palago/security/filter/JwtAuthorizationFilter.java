@@ -2,13 +2,7 @@ package com.ex.palago.security.filter;
 
 import com.ex.palago.member.model.Member;
 import com.ex.palago.security.auth.PrincipalDetails;
-import com.ex.palago.security.jwt.JwtProperties;
 import com.ex.palago.security.jwt.JwtTokenService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,8 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {

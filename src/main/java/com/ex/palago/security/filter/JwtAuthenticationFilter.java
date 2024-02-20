@@ -10,16 +10,10 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import com.auth0.jwt.JWT;
-//import com.auth0.jwt.algorithms.Algorithm;
-import com.ex.palago.auth.model.request.SignInRequest;
+
 import com.ex.palago.security.auth.PrincipalDetails;
-import com.ex.palago.security.jwt.JwtProperties;
 import com.ex.palago.security.jwt.JwtTokenService;
 import com.ex.palago.security.jwt.Token;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,13 +50,27 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 		try {
 			SignInRequest signInRequest = getSignInRequest(request.getInputStream());
+			log.info("{} JwtAuthenticationFilter : " , signInRequest);
 
-			UsernamePasswordAuthenticationToken authenticationToken
-					= createUsernamePasswordAuthenticationToken(signInRequest);
+			UsernamePasswordAuthenticationToken authenticationToken = createUsernamePasswordAuthenticationToken(signInRequest);
+			log.info("JwtAuthenticationFilter : success create token");
 
+			// authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
+			// loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
+			// UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
+			// UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
+			// Authentication 객체를 만들어서 필터체인으로 리턴해준다.
+
+
+
+			// Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
+			// Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
+			// 결론은 인증 프로바이더에게 알려줄 필요가 없음.
 			return authenticationManager.authenticate(authenticationToken);
+
 		} catch (IOException e) {
 			e.printStackTrace();
+			log.error("JwtAuthenticationFilter login request dto parsing : ", e);
 			return super.attemptAuthentication(request, response);
 		}
 	}
@@ -81,6 +89,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
 		String grantedAuthority = authResult.getAuthorities().stream().findAny().orElseThrow().toString();
 		Token jwtToken = tokenService.createToken(authResult.getPrincipal().toString(), grantedAuthority);
+
+		System.out.println("successfulAuthentication !!");
 
 		response.addHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.AUTHORIZATION);
 		response.addHeader(HEADER_STRING, ACCESS_TOKEN_PREFIX + jwtToken.getAccessToken());

@@ -1,6 +1,5 @@
 package com.ex.palago.security.config;
 
-import com.ex.palago.security.jwt.JwtProperties;
 import com.ex.palago.security.jwt.JwtTokenService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -99,9 +98,9 @@ public class SecurityConfig {
 		public void configure(HttpSecurity http) throws Exception {
 //			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
 			http
-				.addFilter(corsConfig.corsFilter());
-//				.addFilter(new JwtAuthenticationFilter(authenticationManager))
-//				.addFilter(new JwtAuthorizationFilter(authenticationManager, memberRepository));
+				.addFilter(corsConfig.corsFilter())
+				.addFilterBefore(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), tokenService), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JwtAuthorizationFilter(authenticationManager(authenticationConfiguration), tokenService, memberRepository), BasicAuthenticationFilter.class);
 //				.addFilter(new JwtAuthenticationFilter(authenticationManager(authenticationConfiguration), tokenService))
 //				.addFilter(new JwtAuthorizationFilter(authenticationManager(authenticationConfiguration), tokenService, memberRepository));
 		}

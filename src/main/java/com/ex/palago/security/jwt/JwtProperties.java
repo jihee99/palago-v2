@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @AllArgsConstructor
 @ConstructorBinding
-@ConfigurationProperties(prefix = "auth.jwt")
+//@ConfigurationProperties(prefix = "auth.jwt")
 public class JwtProperties {
     private String secretKey;
     private String prefix;
