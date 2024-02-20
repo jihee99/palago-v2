@@ -63,6 +63,7 @@ auth:
     prefix: "Bearer "
     header-string: "Authorization"
     expiration-time : 3600
+    access-token-prefix: "Token "
 
 
 jasypt:
