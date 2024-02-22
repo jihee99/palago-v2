@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class RoutingController {
 
-    @RequestMapping("/")
+    @RequestMapping("/home")
     public String mainPage(){
         return "/index";
     }

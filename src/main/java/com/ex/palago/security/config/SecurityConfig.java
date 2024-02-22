@@ -69,7 +69,7 @@ public class SecurityConfig {
 
 				.and()
 				.authorizeRequests(authroize -> authroize
-						.antMatchers("/", "/login", "/logout", "/sign", "/join").permitAll()
+						.antMatchers("/", "/home", "/login", "/logout", "/sign", "/join").permitAll()
 
 //						.antMatchers("/api/v1/user/**").hasAnyRole("ROLE_USER", "ROLE_SELLER", "ROLE_ADMIN")
 						 .antMatchers("/api/v1/user/**")
@@ -81,13 +81,14 @@ public class SecurityConfig {
 						.antMatchers("/api/v1/admin/**")
 						.access("hasRole('ROLE_ADMIN')")
 
-						.anyRequest().authenticated());
+						.anyRequest().authenticated()
+				);
 
-		http.addFilterBefore(new JwtAuthenticationFilter(
-				authenticationManager(authenticationConfiguration), tokenService), UsernamePasswordAuthenticationFilter.class);
-
-		http.addFilterBefore(new JwtAuthorizationFilter(
-				authenticationManager(authenticationConfiguration), tokenService, memberRepository), BasicAuthenticationFilter.class);
+//		http.addFilterBefore(new JwtAuthenticationFilter(
+//				authenticationManager(authenticationConfiguration), tokenService), UsernamePasswordAuthenticationFilter.class);
+//
+//		http.addFilterBefore(new JwtAuthorizationFilter(
+//				authenticationManager(authenticationConfiguration), tokenService, memberRepository), BasicAuthenticationFilter.class);
 
 		return http.build();
 

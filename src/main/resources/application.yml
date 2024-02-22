@@ -49,7 +49,7 @@ logging.level:
 
 logging:
   level:
-    root: info
+    root: trace
 
 mybatis:
   #  config-location: classpath:mybatis-config.xml
